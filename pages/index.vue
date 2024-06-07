@@ -3,12 +3,20 @@ import { useWordStore } from "@/store/WordStore";
 const wordStore = useWordStore();
 const { totalWords, words, userWords } = storeToRefs(wordStore);
 const text = ref("");
+const pontuacao = ref(0);
 
 function alreadyFound(word: string): boolean {
-  return userWords.value.includes(word);
+  return userWords.value.includes(
+    word.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  );
 }
 
 function submit() {
+  if (countLetters(text.value) < 3) {
+    callAlert("A palavra precisa ter no mínimo 3 letras");
+    return;
+  }
+
   // verificar se o text tem a letra A, caso não tenha, dá um erro
   if (!text.value.includes("A")) {
     callAlert("A palavra precisa conter a letra central");
@@ -20,7 +28,10 @@ function submit() {
     if (wordExists === 1) {
       callAlert("Essa palavra já foi encontrada");
     } else {
-      callAlert("Boa +5");
+      const letters = countLetters(text.value);
+      const points = calculatePoints(letters);
+      pontuacao.value += points;
+      callAlert(`Boa, +${points} pontos!`);
     }
   } else {
     callAlert("Essa palavra não esá no nosso banco de dados");
@@ -41,6 +52,14 @@ function countLetters(word: string): number {
 
   return letterCount;
 }
+
+const calculatePoints = (letters: number) => {
+  if (letters === 4) {
+    return 1;
+  } else {
+    return countLetters(text.value);
+  }
+};
 
 const alert = ref(false);
 const alertText = ref("");

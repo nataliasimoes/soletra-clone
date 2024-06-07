@@ -10,7 +10,11 @@ export const useWordStore = defineStore("wordStore", () => {
 
   function checkWord(word: string) {
     const wordIndex = words.value.findIndex(
-      (w) => w.toLowerCase() === word.toLowerCase()
+      (w) =>
+        w
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") === word.toLowerCase()
     );
     if (wordIndex === -1) {
       return false;
