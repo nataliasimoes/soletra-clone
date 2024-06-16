@@ -74,7 +74,7 @@ function callAlert(text: string) {
 
 <template>
   <UContainer>
-    <div class="text-center mb-5 ml-16 flex justify-center">
+    <div class="text-center mb-5 flex justify-center">
       <UInput
         id="input"
         color="primary"
@@ -84,6 +84,7 @@ function callAlert(text: string) {
         placeholder=""
         class="input-text board"
         v-if="!alert"
+        style="text-align: center"
       />
     </div>
     <div>
